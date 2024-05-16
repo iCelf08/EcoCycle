@@ -6,17 +6,17 @@ class User(AbstractUser):
     is_enterprise = models.BooleanField(default=False)
     
     @property
-    def total_balance(self):
-        return self.ramassage_set.all().aggregate(models.Sum('balance'))['balance__sum']
-    
+    def total_co2_saved(self):
+        return sum(ramassage.co2_saved for ramassage in self.ramassage_set.all())
+
     @property
-    def total_co2(self):
-        return self.ramassage_set.all().aggregate(models.Sum('co2_saved'))['co2_saved__sum']
+    def co2_saved(self):
+        return sum(ramassage.co2_saved for ramassage in  self.ramassage_set.all())
 
 class Trash(models.Model):
     type = models.CharField(unique=True, max_length=100)
     price_per_kilo = models.DecimalField(max_digits=10, decimal_places=2)
-    co2 = models.IntegerField(default=1)
+    co2 = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
         return self.type
